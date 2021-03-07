@@ -6,38 +6,61 @@ import Header from "./Header";
 import Rows from "./Rows";
 
 function App() {
+
     const [headerWithIdAndDuplicate, setHeaderWithIdAndDuplicate] = useState([])
     const [rowsWithIdAndDuplicate, setRowsWithIdAndDuplicate] = useState([])
-    const [isValid, setIsValid] = useState(true)
+    const [isValidFile, setIsValidFile] = useState(true)
 
     const handleFiles = files => {
-        console.log(typeof files[0].name.slice(-3))
 
         if (files[0].name.slice(-3) !== 'csv') {
-            setIsValid(false)
+            setIsValidFile(false)
+            return
         }
         let reader = new FileReader();
 
         reader.onloadend = function (e) {
             if (reader.result) {
-                const header = Object.keys(parse(reader.result, {header: true}).data[0])
-                const rows = (parse(reader.result, {header: true}).data)
-                const headerWithIdAndDuplicate = (['id', ...header, 'Duplicate with'])
-                console.log(rows)
+
+                const headerNames = Object.keys(parse(reader.result, {
+                    header: true,
+                    transformHeader:function(h) {
+                        return h.trim();
+                    },
+                }).data[0])
+
+                const rows = (parse(reader.result, {
+
+                    skipEmptyLines: true,
+                    header: true,
+                    transformHeader:function(h) {
+                        return h.trim();
+                    },
+                    transform:function (i){
+                        return i.trim()
+                    }
+                }).data)
+
+                const headerWithIdAndDuplicate = (['id', ...headerNames, 'Duplicate with'])
+
                 const rowsWithIdAndDuplicate = rows.map((i, index) => {
                     return {id: index, ...i, ['Duplicate with']: ''}
                 })
                 setHeaderWithIdAndDuplicate(headerWithIdAndDuplicate)
                 setRowsWithIdAndDuplicate(rowsWithIdAndDuplicate)
+            }else{
+                setHeaderWithIdAndDuplicate([])
+                setRowsWithIdAndDuplicate([])
             }
 
         }
         reader.readAsText(files[0]);
+
     }
 
     return (
         <div>
-            {isValid
+            {isValidFile
                 ? <>
                     <ReactFileReader fileTypes={".csv"} handleFiles={handleFiles}>
                         <button className='btn'>Upload</button>
@@ -49,8 +72,6 @@ function App() {
                 </>
                 : <div>NO VALID</div>
             }
-
-
         </div>
     )
 }
