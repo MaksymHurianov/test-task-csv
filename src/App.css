@@ -3,8 +3,14 @@
 }
 table, td {
   border: 1px solid black;
+  margin: 50px auto;
+  border-collapse: collapse
+
 }
 .header {
   background-color: lightsteelblue;
+}
+td{
+  padding:10px 30px;
 }
 
