@@ -6,7 +6,7 @@ import Header from "./Header";
 import Rows from "./Rows";
 
 function App() {
-
+    console.log(+'1 11')
     const [headerWithIdAndDuplicate, setHeaderWithIdAndDuplicate] = useState([])
     const [rowsWithIdAndDuplicate, setRowsWithIdAndDuplicate] = useState([])
     const [isValidFile, setIsValidFile] = useState(true)
@@ -72,7 +72,8 @@ function App() {
                 function earlyIncomeValidation(i){
                     if(headerNames.indexOf('Yearly Income') !== -1){
                         if(i['Yearly Income'] !== '' && i['Yearly Income'] < 1000000){
-                            i['Yearly Income'] = Number((+i['Yearly Income']).toFixed(2))
+                            i['Yearly Income'] = ((+i['Yearly Income']).toFixed(2))
+                            console.log(i['Yearly Income'])
                         }
                     }
                 }
