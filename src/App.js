@@ -6,7 +6,7 @@ import Header from "./Header";
 import Rows from "./Rows";
 
 function App() {
-    console.log(+'1 11')
+
     const [headerWithIdAndDuplicate, setHeaderWithIdAndDuplicate] = useState([])
     const [rowsWithIdAndDuplicate, setRowsWithIdAndDuplicate] = useState([])
     const [isValidFile, setIsValidFile] = useState(true)
