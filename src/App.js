@@ -4,6 +4,7 @@ import ReactFileReader from 'react-file-reader'
 import {parse} from 'papaparse'
 import Header from "./Header";
 import Rows from "./Rows";
+import Error from "./Error";
 
 function App() {
 
@@ -11,18 +12,29 @@ function App() {
     const [rowsWithIdAndDuplicate, setRowsWithIdAndDuplicate] = useState([])
     const [isValidFile, setIsValidFile] = useState(true)
     const [phonesArr, setPhonesArr] = useState([])
+    const [emailsArr, setEmailsArr] = useState([])
+    const states = {
+        alabama: 'AL',
+        alaska: 'AK',
+        arizona: 'AZ',
+        arkansas: 'AR',
+        california: 'CA',
+        colorado: 'CO',
+    }
+    const statesArr = (Object.keys(states))
 
     const handleFiles = files => {
 
         if (files[0].name.slice(-3) !== 'csv') {
             setIsValidFile(false)
             return
+        }else{
+            setIsValidFile(true)
         }
         let reader = new FileReader();
 
         reader.onloadend = function (e) {
             if (reader.result) {
-
 
                 const headerNames = Object.keys(parse(reader.result, {
                     header: true,
@@ -32,7 +44,6 @@ function App() {
                 }).data[0])
 
                 const rows = (parse(reader.result, {
-
                     skipEmptyLines: true,
                     header: true,
                     transformHeader:function(h) {
@@ -60,7 +71,6 @@ function App() {
                     }
                 }
                 function hasChildrenValidation(i){
-
                     if(headerNames.indexOf('Has children') !== -1){
                         if(i['Has children'] === ''){
                             i['Has children'] = 'FALSE'
@@ -73,20 +83,41 @@ function App() {
                     if(headerNames.indexOf('Yearly Income') !== -1){
                         if(i['Yearly Income'] !== '' && i['Yearly Income'] < 1000000){
                             i['Yearly Income'] = ((+i['Yearly Income']).toFixed(2))
-                            console.log(i['Yearly Income'])
+                        }
+                    }
+                }
+                function licenseStatesValidation(i){
+                    let reducedStatesArr = []
+                    if(headerNames.indexOf('License states') !== -1){
+                        if(i['License states'].indexOf('|') !== -1){
+                            let state = i['License states'].split('|')
+                            for(let i = 0; i < state.length; ++i){
+                                let stateTrimmed = (state[i].trim().toLowerCase())
+                                reducedStatesArr.push(statesArr.indexOf(stateTrimmed) !== -1? states[stateTrimmed]: 'not valid')
+                            }
+                            i['License states'] = reducedStatesArr.join(' | ')
+
+                        }else{
+                            i['License states'] = (statesArr.indexOf(i['License states'].toLowerCase()) !== -1? states[statesArr[statesArr.indexOf(i['License states'].toLowerCase())]]: 'not valid')
                         }
                     }
                 }
 
                 const rowsWithIdAndDuplicate = rows.map((i, index) => {
+
                     phoneValidation(i)
                     hasChildrenValidation(i)
                     earlyIncomeValidation(i)
+                    licenseStatesValidation(i)
                     return {id: index, ...i, 'Duplicate with': ''}
                 })
                 setPhonesArr(rows.map(i=>{
                     return i['Phone']
                 }))
+                setEmailsArr(rows.map(i=>{
+                    return i['Email']
+                }))
+
                 setHeaderWithIdAndDuplicate(headerWithIdAndDuplicate)
                 setRowsWithIdAndDuplicate(rowsWithIdAndDuplicate)
             }else{
@@ -101,20 +132,22 @@ function App() {
 
     return (
         <div>
-            {isValidFile
-                ? <>
+
                     <ReactFileReader fileTypes={".csv"} handleFiles={handleFiles}>
-                        <button className='btn'>Upload</button>
+                        <button className='btn'>Import users</button>
                     </ReactFileReader>
+            {isValidFile
+                ?
                     <table>
                         <Header headerNames={headerWithIdAndDuplicate}/>
                         <Rows rows={rowsWithIdAndDuplicate}
                               headerNames={headerWithIdAndDuplicate}
                               phonesArr={phonesArr}
+                              emailsArr={emailsArr}
                         />
                     </table>
-                </>
-                : <div>NO VALID</div>
+
+                : <Error/>
             }
         </div>
     )

@@ -1,6 +1,6 @@
 import React from 'react'
 
-function Rows({rows, headerNames, phonesArr}) {
+function Rows({rows, headerNames, phonesArr, emailsArr}) {
 
     console.log(phonesArr)
     console.log(rows)
@@ -8,12 +8,22 @@ function Rows({rows, headerNames, phonesArr}) {
         <tbody>
 
         {rows.map((row, index, rows) => {
-            let styledRows = []
+            let styleRows = []
             let stylePhone = {}
+            for(let i = 0; i < phonesArr.length; ++i){
+                if(row['Phone'] === phonesArr[i] && row.id !== i && row['Phone'] !== ''){
+                    row['Duplicate with'] = i
+                    break
+                }
+            }
+            for(let i = 0; i < emailsArr.length; ++i){
+                if(row['Email'].toLowerCase() === emailsArr[i].toLowerCase() && row.id !== i && row['Email'] !== ''){
+                    row['Duplicate with'] = i
+                    break
+                }
+            }
 
             for (let i = 0; i < headerNames.length; ++i) {
-
-
                 const styleAge = (row['Age'] < 21 || !+row['Age']) && headerNames[i] === 'Age' ? {backgroundColor: 'red'} : undefined
                 const styleExperience = (+row['Experience'] <= 0 || row['Age'] - row['Experience'] < 0) && headerNames[i] === 'Experience' ? {backgroundColor: 'red'} : undefined
 
@@ -33,13 +43,11 @@ function Rows({rows, headerNames, phonesArr}) {
 
                 const styleAll = {...styleAge, ...styleExperience, ...stylePhone, ...styleDate, ...styleLicenceNumber, ...styleEmail, ...styleHasChildren, ...styleYearlyIncome}
 
-
-
-                styledRows = [...styledRows, (<td key={i} style={styleAll}>{rows[index][headerNames[i]]}</td>)]
+                styleRows = [...styleRows, (<td key={i} style={styleAll}>{rows[index][headerNames[i]]}</td>)]
             }
             return (
                 <tr key={index}>
-                    {styledRows}
+                    {styleRows}
                 </tr>
             )
         })}

@@ -13,4 +13,9 @@ table, td {
 td{
   padding:10px 30px;
 }
-
+.btn {
+  width: 150px;
+  height: 50px;
+  background-color: lightsteelblue;
+  color: white;
+}
