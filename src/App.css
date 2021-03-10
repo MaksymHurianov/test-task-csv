@@ -1,9 +1,10 @@
-.App {
+.app {
   text-align: center;
 }
+
 table, td {
   border: 1px solid black;
-  margin: 50px auto;
+  margin: 150px auto 0;
   border-collapse: collapse
 
 }
@@ -11,11 +12,15 @@ table, td {
   background-color: lightsteelblue;
 }
 td{
-  padding:10px 30px;
+  padding:10px 20px;
 }
 .btn {
   width: 150px;
   height: 50px;
   background-color: lightsteelblue;
   color: white;
+  margin-top: 100px;
+
 }
+
+

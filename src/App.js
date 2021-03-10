@@ -193,11 +193,10 @@ function App() {
     }
 
     return (
-        <div>
+        <div className={'app'}>
             <ReactFileReader fileTypes={".csv"} handleFiles={handleFiles}>
                 <button className='btn'>Import users</button>
             </ReactFileReader>
-
             {isValidFile
                 ? <table>
                     <Header headerNames={headerWithIdAndDuplicate}/>
@@ -207,7 +206,6 @@ function App() {
                           emailsArr={emailsArr}
                     />
                 </table>
-
                 : <Error/>
             }
         </div>

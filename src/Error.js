@@ -6,6 +6,8 @@ function Error(){
         backgroundColor: '#f65337',
         border: '1px solid black',
         width: '500px',
+        margin: 'auto',
+        marginTop: '150px'
     }
     const styleText = {
         textAlign: 'center',
@@ -13,13 +15,9 @@ function Error(){
         padding: '20px'
     }
     return(
-
-        <div >
             <div style={styleErrorField}>
                 <p style={styleText}>File format is not correct</p>
             </div>
-
-        </div>
 
     )
 }
